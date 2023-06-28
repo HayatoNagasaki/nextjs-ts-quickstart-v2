@@ -18,7 +18,7 @@ const Header: React.FC = () => {
     <header className="bg-gray-800 text-white">
       <Container className="!max-w-7xl flex justify-between items-center h-[64px] !mt-0">
         <Link href="/">
-          <h1 className="text-3xl text-white">Prompt Stock</h1>
+          <h1 className="text-3xl text-white">Divcord Technologies</h1>
         </Link>
         <nav>
           <ul className="flex items-center">
