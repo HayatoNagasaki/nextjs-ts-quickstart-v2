@@ -1,0 +1,21 @@
+type User {
+  id: String!
+  name: String!
+  image: String!
+}
+
+fragment UserFragment on User {
+  id
+  name
+  image
+}
+
+type Query {
+  user(id: String!): User!
+}
+
+query User($id: String!) {
+  user(id: $id) {
+    ...UserFragment
+  }
+}
