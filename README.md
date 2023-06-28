@@ -10,6 +10,8 @@
 - Tailwind CSS
 - Daisy UI
 - Prisma
+- Apollo Server (GraphQL)
+- Graphql Codegen
 
 ## ESLint と Prettier の関連ライブラリインストール
 

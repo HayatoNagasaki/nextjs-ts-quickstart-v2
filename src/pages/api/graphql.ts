@@ -1,9 +1,13 @@
-import { ApolloServer, gql } from 'apollo-server-micro';
+import { ApolloServer } from '@apollo/server';
+import { startServerAndCreateNextHandler } from '@as-integrations/next';
 import { readFileSync } from 'fs';
-import type { IncomingMessage, ServerResponse } from 'http';
+import { gql } from 'graphql-tag';
+import type { IncomingMessage } from 'http';
 import Cors from 'micro-cors';
+import type { NextRequest } from 'next/server';
 import { join } from 'path';
 
+import type { Context } from '@/graphql/context';
 import { createContext } from '@/graphql/context';
 import { resolvers } from '@/graphql/resolvers';
 
@@ -14,31 +18,16 @@ const typeDefs = gql`
   ${readFileSync(path).toString('utf-8')}
 `;
 
-const apolloServer = new ApolloServer({
-  typeDefs,
+const server = new ApolloServer({
   resolvers,
-  context: createContext,
-});
+  typeDefs,
+} as any);
 
-const startServer = apolloServer.start();
-
-export default cors(async function handler(
-  req: IncomingMessage,
-  res: ServerResponse<IncomingMessage>
-) {
-  if (req.method === 'OPTIONS') {
-    res.end();
-    return false;
-  }
-  await startServer;
-
-  await apolloServer.createHandler({
-    path: '/api/graphql/',
-  })(req, res);
-});
-
-export const config = {
-  api: {
-    bodyParser: false,
+const handler = startServerAndCreateNextHandler<NextRequest>(server, {
+  context: async ({ req }: { req: IncomingMessage }): Promise<Context> => {
+    const context = await createContext({ req });
+    return context;
   },
-};
+} as any);
+
+export default handler;
